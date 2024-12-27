@@ -99,3 +99,29 @@ argocd login $SVCIP
 
 ```
 
+Add kubernetes cluster to argocd
+
+By default local cluster is registered with argocd and can be check with below command. Other clusters can be added to argo cd so that applications can be installed accross other clusters from one UI/CLI of argocd.
+
+Check current registered k8s cluster
+
+```
+argocd cluster list 
+```
+
+
+check other availble clusters, there is magic, you need to check conttext in kubeconfig file add use those context name to add them to argocd server
+
+```
+kubectl config get-context
+```
+
+add additional clusters
+
+```
+argocd cluster add context-name
+```
+
+User rm to remove cluster from argocd.
+
+
