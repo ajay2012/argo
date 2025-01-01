@@ -125,3 +125,9 @@ argocd cluster add context-name
 User rm to remove cluster from argocd.
 
 
+Kubernete's kubete bootstrapping process
+https://kubernetes.io/docs/reference/access-authn-authz/kubelet-tls-bootstrapping/
+
+
+
+https://kubernetes.io/docs/tasks/tls/
