@@ -161,7 +161,11 @@ kubectl apply \
     -f doc/crds/whereabouts.cni.cncf.io_ippools.yaml \
     -f doc/crds/whereabouts.cni.cncf.io_overlappingrangeipreservations.yaml
 ```
+validate whereabouts 
 
+```
+kubectl get ds -A | grep -i whereabouts
+```
 Create network-attach-defination resource using whereabouts IPAM plugin
 
 ##Whereabouts is particularly useful in scenarios where you're using additional network interfaces for Kubernetes. A NetworkAttachmentDefinition custom resource can be used with a CNI meta plugin such as Multus CNI to attach multiple interfaces to your pods in Kubernetes.
@@ -172,20 +176,39 @@ Create network-attach-defination resource using whereabouts IPAM plugin
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: whereabouts-conf
+  name: public-conf
 spec:
   config: '{
       "cniVersion": "0.3.0",
       "name": "whereaboutsexample",
       "type": "macvlan",
-      "master": "eth0",
+      "master": "eth1",    ### Interface to be used for public network
       "mode": "bridge",
       "ipam": {
         "type": "whereabouts",
-        "range": "192.168.2.225/28"
+        "range": "192.168.112.225/28"
       }
     }'
 ```
 
+
+```
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: cluster-conf
+spec:
+  config: '{
+      "cniVersion": "0.3.0",
+      "name": "whereaboutsexample",
+      "type": "macvlan",
+      "master": "eth2",    ### Interface to be used for cluster network
+      "mode": "bridge",
+      "ipam": {
+        "type": "whereabouts",
+        "range": "192.168.113.225/28"
+      }
+    }'
+```
 
 
