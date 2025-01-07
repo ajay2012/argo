@@ -121,9 +121,71 @@ Import External ceph cluster or rook cluster
 
 Ref: https://rook.io/docs/rook/latest/CRDs/Cluster/external-cluster/external-cluster/
 
+An external cluster is a Ceph configuration that is managed outside of the local K8s cluster. The external cluster could be managed by cephadm, or it could be another Rook cluster that is configured to allow the access (usually configured with host networking).
 
 
 
+
+Using multus as network provider for ceph cluster:
+
+rook-ceph cluster provids option to use multus network provider, which allow kubernetes  CNI can be used for public and cluster network , this allow in maintaining strong isolation and impropved performance.
+
+to make use of multus we need to configure it on kubernetes cluster. In case of ceph cluster , 2 NIC will be configured to as resource network-attachment-defination using whereabouts as IPAM for address assignement accross cluster (host-local will not be used here, as it provide IP locally in host only and  create ip collision).
+
+MULTUS Installation:
+
+Ref: https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.md
+
+```
+kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
+```
+
+validate installation:
+
+```
+kubectl get pods --all-namespaces | grep -i multus
+```
+
+whereabouts installation
+
+An IP Address Management (IPAM) CNI plugin that assigns IP addresses cluster-wide.
+
+If you need a way to assign IP addresses dynamically across your cluster -- Whereabouts is the tool for you. If you've found that you like how the host-local CNI plugin works, but, you need something that works across all the nodes in your cluster (host-local only knows how to assign IPs to pods on the same node) -- Whereabouts is just what you're looking for.
+
+Ref: https://github.com/k8snetworkplumbingwg/whereabouts
+
+```
+git clone https://github.com/k8snetworkplumbingwg/whereabouts && cd whereabouts
+kubectl apply \
+    -f doc/crds/daemonset-install.yaml \
+    -f doc/crds/whereabouts.cni.cncf.io_ippools.yaml \
+    -f doc/crds/whereabouts.cni.cncf.io_overlappingrangeipreservations.yaml
+```
+
+Create network-attach-defination resource using whereabouts IPAM plugin
+
+##Whereabouts is particularly useful in scenarios where you're using additional network interfaces for Kubernetes. A NetworkAttachmentDefinition custom resource can be used with a CNI meta plugin such as Multus CNI to attach multiple interfaces to your pods in Kubernetes.
+
+##In short, a NetworkAttachmentDefinition contains a CNI configuration packaged into a custom resource. Here's an example of a NetworkAttachmentDefinition containing a CNI configuration which uses Whereabouts for IPAM:
+
+```
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: whereabouts-conf
+spec:
+  config: '{
+      "cniVersion": "0.3.0",
+      "name": "whereaboutsexample",
+      "type": "macvlan",
+      "master": "eth0",
+      "mode": "bridge",
+      "ipam": {
+        "type": "whereabouts",
+        "range": "192.168.2.225/28"
+      }
+    }'
+```
 
 
 
