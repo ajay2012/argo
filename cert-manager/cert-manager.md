@@ -179,7 +179,7 @@ spec:
 
 #Securing ingress with ClusterIssuer "my-ca-issuer"
 
-You can use issuer or cluster issuer to protect ingress with TLS
+You can use issuer or clusterissuer to protect ingress with TLS
 
 ```
 apiVersion: networking.k8s.io/v1
@@ -207,3 +207,9 @@ spec:
     - example.com
     secretName: myingress-cert # < cert-manager will store the created certificate in this secret.
 ```
+
+You can refer to https://cert-manager.io/docs/usage/ingress/#supported-annotations for supported annotations.
+most commanly used are 
+
+cert-manager.io/duratio:  XXh      
+cert-manager.io/renew-before: XXh
