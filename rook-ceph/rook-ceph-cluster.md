@@ -7,8 +7,8 @@ Ref: https://rook.io/docs/rook/latest/Getting-Started/quickstart/
 Requirement: 
 
 1. kubernets cluster with at least 3 nodes (kubernetes masters can be used as workers after removing taints)
-2. A disk of attached to each nodes to be used as OSD.  Here raw disk is used.
-3. each node should have a PUBLIC and Cluster network with IP assigned shouble be able to communicate with each other.
+2. A disk  attached to each nodes to be used as OSD. 
+3. 2 NIC one for Public Network and 2nd for Cluster Network
 4. Public network will be used to access ceph cluster services.
 5. Cluster network will be used by ceph cluster for internal operations like, recovery, balancing of data etc.
 6. If re-installing ceph , please make sure to clear directory /var/lib/rook . otherwise it will not allow mon to joing cluster.
@@ -126,13 +126,13 @@ An external cluster is a Ceph configuration that is managed outside of the local
 
 
 
-Using multus as network provider for ceph cluster:
+#Using multus as network provider for ceph cluster:
 
 rook-ceph cluster provids option to use multus network provider, which allow kubernetes  CNI can be used for public and cluster network , this allow in maintaining strong isolation and impropved performance.
 
 to make use of multus we need to configure it on kubernetes cluster. In case of ceph cluster , 2 NIC will be configured to as resource network-attachment-defination using whereabouts as IPAM for address assignement accross cluster (host-local will not be used here, as it provide IP locally in host only and  create ip collision).
 
-MULTUS Installation:
+##MULTUS Installation:
 
 Ref: https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.md
 
@@ -146,7 +146,7 @@ validate installation:
 kubectl get pods --all-namespaces | grep -i multus
 ```
 
-whereabouts installation
+##whereabouts installation
 
 An IP Address Management (IPAM) CNI plugin that assigns IP addresses cluster-wide.
 
