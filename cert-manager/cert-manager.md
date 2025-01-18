@@ -145,6 +145,7 @@ metadata:
 spec:
   ca:
     secretName: root-secret
+EOF
 ```
 
 ```
