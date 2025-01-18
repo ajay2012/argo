@@ -124,6 +124,54 @@ argocd cluster add context-name
 
 User rm to remove cluster from argocd.
 
+Use of custome values.yaml file
+
+I have add a helm app as submoudle under git repository. And i created its custome values.yaml file under seprate directory so that it is intact. to add this values.yaml file when creating argocd app using UI I didn't find any way to use this values.yaml , how ever with argocd cli I have tested it. see below. After this when ever I make change to "helm-overrides/values.yam"  file , app setting is updated.
+
+```
+root@master01:~# argocd app get argocd/testapp
+Name:               argocd/testapp
+Project:            default
+Server:             https://kubernetes.default.svc
+Namespace:          default
+URL:                https://10.233.58.43/applications/testapp
+Source:
+- Repo:             https://github.com/ajay2012/lab_setup.git
+  Target:           HEAD
+  Path:             submodules/argocd-example-apps/helm-guestbook
+  Helm Values:      values.yaml     ### Inital values.yaml that is inside that chart under"submodules/argocd-example-apps/helm-guestbook" ###
+SyncWindow:         Sync Allowed
+Sync Policy:        Manual
+Sync Status:        Synced to HEAD (09fa3a9)
+Health Status:      Healthy
+
+GROUP  KIND        NAMESPACE  NAME                    STATUS  HEALTH   HOOK  MESSAGE
+       Service     default    testapp-helm-guestbook  Synced  Healthy        service/testapp-helm-guestbook created
+apps   Deployment  default    testapp-helm-guestbook  Synced  Healthy        deployment.apps/testapp-helm-guestbook created
+root@master01:~# argocd app  set argocd/testapp --values ../../helm-overrides/values.yaml
+FATA[0001] rpc error: code = InvalidArgument desc = application spec for testapp is invalid: InvalidSpecError: Unable to generate manifests in submodules/argocd-example-apps/helm-guestbook: rpc error: code = Unknown desc = `helm template . --name-template testapp --namespace default --kube-version 1.31 --values <path to cached source>/submodules/helm-overrides/values.yaml <api versions removed> --include-crds` failed exit status 1: Error: open <path to cached source>/submodules/helm-overrides/values.yaml: no such file or directory
+root@master01:~# argocd app  set argocd/testapp --values ../../../helm-overrides/values.yaml    #Custome file exist in repository at root "helm-overrides/values.yaml" 
+root@master01:~# argocd app get argocd/testapp
+Name:               argocd/testapp
+Project:            default
+Server:             https://kubernetes.default.svc
+Namespace:          default
+URL:                https://10.233.58.43/applications/testapp
+Source:
+- Repo:             https://github.com/ajay2012/lab_setup.git
+  Target:           HEAD
+  Path:             submodules/argocd-example-apps/helm-guestbook
+  Helm Values:      ../../../helm-overrides/values.yaml
+SyncWindow:         Sync Allowed
+Sync Policy:        Manual
+Sync Status:        OutOfSync from HEAD (09fa3a9)
+Health Status:      Healthy
+
+GROUP  KIND        NAMESPACE  NAME                    STATUS     HEALTH   HOOK  MESSAGE
+       Service     default    testapp-helm-guestbook  Synced     Healthy        service/testapp-helm-guestbook created
+apps   Deployment  default    testapp-helm-guestbook  OutOfSync  Healthy        deployment.apps/testapp-helm-guestbook created
+root@master01:~#
+```
 
 Kubernete's kubete bootstrapping process
 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-tls-bootstrapping/
