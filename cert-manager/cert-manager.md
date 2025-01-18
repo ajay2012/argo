@@ -113,7 +113,7 @@ Create ClusterIssuer
 kubectl apply -f ClusterIssuer.yaml
 ```
 
-##Bootstrapping CA Issuers
+##Bootstrapping CA ClusterIssuers using a Issuers to generate ca key pair
 
 One of the ideal use cases for SelfSigned issuers is to bootstrap a custom root certificate for a private PKI, including with the cert-manager CA issuer.
 
@@ -121,6 +121,14 @@ Here we are generating a certificate my-selfsigned-ca using selfSigned ClusterIs
 
 ```
 cat <<EOF > bootstrap-ca-root.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+  namespace: sandbox
+spec:
+  selfSigned: {}
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -135,7 +143,7 @@ spec:
     size: 256
   issuerRef:
     name: selfsigned-issuer
-    kind: ClusterIssuer
+    kind: Issuer
     group: cert-manager.io
 ---
 apiVersion: cert-manager.io/v1
