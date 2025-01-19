@@ -110,18 +110,33 @@ argocd cluster list
 ```
 
 
-check other availble clusters, there is magic, you need to check conttext in kubeconfig file add use those context name to add them to argocd server
+Add more clusters to argocd
+
+You need kubeconfig file for cluster you are trying to add. Here server parameter should be either IP or FQDN which is accessible from this kubernetes cluster coreDNS. In lab we are adding second cluster "192.168.122.101 ceph-lb-apiserver.kubernetes.local" , here IP "192.168.122.101" is in same subnet as of local cluster , however FQDN "ceph-lb-apiserver.kubernetes.local" is not resolved by lcoal cluster as coreDNS is forwarding request to any external DNS for non-cluster queries. So i am using IP here to add the cluster to argocd.
+
+
 
 ```
-kubectl config get-context
+kubectl --kubeconfig /path/to/kubeconfigfile config get-context
+kubectl --kubeconfig /path/to/kubeconfigfile config get-cluster
 ```
-
-add additional clusters
-
+Now add cluster 
 ```
-argocd cluster add context-name
+argocd cluster add --kubeconfig /tmp/admin.conf --kube-context string "kubernetes-admin@cluster.local"  --name cluster.local
 ```
+o/p
+```
+WARNING: This will create a service account `argocd-manager` on the cluster referenced by context `kubernetes-admin@cluster.local` with full cluster level privileges. Do you want to continue [y/N]? y
+INFO[0002] ServiceAccount "argocd-manager" already exists in namespace "kube-system"
+INFO[0002] ClusterRole "argocd-manager-role" updated
+INFO[0002] ClusterRoleBinding "argocd-manager-role-binding" updated
+Cluster 'https://192.168.122.101:6443' added
 
+argocd cluster list
+SERVER                          NAME           VERSION  STATUS      MESSAGE                                                  PROJECT
+https://192.168.122.101:6443    cluster.local           Unknown     Cluster has no applications and is not being monitored.
+https://kubernetes.default.svc  in-cluster     1.31     Successful
+```
 User rm to remove cluster from argocd.
 
 Use of custome values.yaml file
