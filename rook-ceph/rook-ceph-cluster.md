@@ -141,13 +141,13 @@ IMAGE=`kubectl get pv $VM -o jsonpath='{.items[*].spec.csi.volumeAttributes.imag
 echo $IMAGE
 
 # check volume in ceph cluster using ceph plugin with rbd
-
+```
 root@mon1:~# kubectl rook-ceph rbd ls
 poolName        imageName                                     namespace
 --------        ---------                                     ---------
 ceph-blockpool  csi-vol-aca2ee88-e063-49ab-93be-81f9f1f1b90a  ---
 root@mon1:~#
-
+```
 
 # Using multus as network provider for ceph cluster:
 
@@ -191,9 +191,9 @@ kubectl get ds -A | grep -i whereabouts
 ```
 Create network-attach-defination resource using whereabouts IPAM plugin
 
-## Whereabouts is particularly useful in scenarios where you're using additional network interfaces for Kubernetes. A NetworkAttachmentDefinition custom resource can be used with a CNI meta plugin such as Multus CNI to attach multiple interfaces to your pods in Kubernetes.
+Whereabouts is particularly useful in scenarios where you're using additional network interfaces for Kubernetes. A NetworkAttachmentDefinition custom resource can be used with a CNI meta plugin such as Multus CNI to attach multiple interfaces to your pods in Kubernetes.
 
-## In short, a NetworkAttachmentDefinition contains a CNI configuration packaged into a custom resource. Here's an example of a NetworkAttachmentDefinition containing a CNI configuration which uses Whereabouts for IPAM:
+In short, a NetworkAttachmentDefinition contains a CNI configuration packaged into a custom resource. Here's an example of a NetworkAttachmentDefinition containing a CNI configuration which uses Whereabouts for IPAM:
 
 ```
 apiVersion: "k8s.cni.cncf.io/v1"
