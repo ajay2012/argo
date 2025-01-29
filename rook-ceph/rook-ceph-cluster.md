@@ -89,7 +89,9 @@ Install Rook plugin
 ```
 kubectl krew install rook-ceph
 ```
-
+```
+kubectl krew list
+```
 Test krew plugin 
 
 Ref: https://github.com/rook/kubectl-rook-ceph/blob/master/README.md#run-a-ceph-command
