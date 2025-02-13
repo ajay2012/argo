@@ -117,8 +117,9 @@ You need kubeconfig file for cluster you are trying to add. Here server paramete
 
 
 ```
-kubectl --kubeconfig /path/to/kubeconfigfile config get-context
-kubectl --kubeconfig /path/to/kubeconfigfile config get-cluster
+conf="/tmp/admin.conf"
+kubectl --kubeconfig $conf config get-contexts
+kubectl --kubeconfig $conf config get-clusters
 ```
 Now add cluster 
 ```
