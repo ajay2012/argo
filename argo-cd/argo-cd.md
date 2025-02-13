@@ -123,7 +123,7 @@ kubectl --kubeconfig $conf config get-clusters
 ```
 Now add cluster 
 ```
-argocd cluster add --kubeconfig /tmp/admin.conf --kube-context string "kubernetes-admin@cluster.local"  --name cluster.local
+argocd cluster add --kubeconfig $conf --kube-context string "kubernetes-admin@cluster.local"  --name cluster.local
 ```
 o/p
 ```
