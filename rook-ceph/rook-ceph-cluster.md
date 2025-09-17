@@ -25,7 +25,7 @@ cd rook/deploy/example
 # Install rook-ceph operators
 
 ```
-kubectl create -f crds.yaml -f common.yaml -f operator.yaml
+kubectl create -f crds.yaml -f common.yaml -f csi-operator.yaml -f operator.yaml
 
 # verify the rook-ceph-operator is in the `Running` state before proceeding
 
